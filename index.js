@@ -4,7 +4,10 @@ const app = express();
 var cors = require("cors");
 
 app.use(cors());
-
+app.get("/", function (req, res) {
+  console.log("SERVER STARTED");
+  res.send("Server is running");
+});
 app.post("/getShipment", express.json(), function (req, res) {
   console.log(req.body);
   let orderId = req.body;
