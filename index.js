@@ -43,8 +43,8 @@ function formatDate(inputDate) {
 }
 
 app.post("/getShipment", express.json(), function (req, res) {
-  console.log(req.body);
-  let orderId = req.body;
+  console.log(req.body.queryResult.parameters.number);
+  let orderId = req.body.queryResult.parameters.number;
   let appData = {};
 
   axios
@@ -61,8 +61,44 @@ app.post("/getShipment", express.json(), function (req, res) {
       appData["data"] = response.data.shipmentDate;
       // console.log("appdata", appData.data);
       let shipmentDate = formatDate(appData.data);
+      console.log(shipmentDate);
       const fulfilmentMsg = {
         fulfillmentMessages: [
+          {
+            payload: {
+              richContent: [
+                // for Dialogflow Messenger integration
+                [
+                  {
+                    type: "info",
+                    title: shipmentDate,
+                    subtitle: "Shipment Date",
+                    image: {
+                      src: {
+                        rawUrl:
+                          "https://static.vecteezy.com/system/resources/previews/006/900/704/original/green-tick-checkbox-illustration-isolated-on-white-background-free-vector.jpg",
+                      },
+                    },
+                    actionLink: "https://example.com",
+                  },
+                  {
+                    type: "button",
+                    icon: {
+                      type: "chevron_right",
+                      color: "#FF9800",
+                    },
+                    text: "Follow for Tracking",
+                    link: "https://example.com/path/for/end-user/to/follow",
+                    event: {
+                      name: "Follow for tracking",
+                    },
+                  },
+                ],
+              ],
+
+              // custom integration payload here
+            },
+          },
           {
             card: {
               title: shipmentDate,
@@ -79,6 +115,8 @@ app.post("/getShipment", express.json(), function (req, res) {
           },
         ],
       };
+      {
+      }
       res.status(201).json(fulfilmentMsg);
     })
     .catch(function (error) {
