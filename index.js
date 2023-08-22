@@ -2,6 +2,14 @@ const express = require("express");
 const axios = require("axios");
 const app = express();
 var cors = require("cors");
+require("dotenv").config();
+const OpenAI = require("openai");
+
+// console.log(process.env.OPENAI_API_KEY);
+const fineTunedModel = "davinci:ft-personal-2023-08-21-14-07-13";
+const openai = new OpenAI({
+  apiKey: process.env["OPENAI_API_KEY"], // defaults to process.env["OPENAI_API_KEY"]
+});
 
 app.use(cors());
 app.get("/", function (req, res) {
@@ -123,7 +131,43 @@ app.post("/getShipment", express.json(), function (req, res) {
       console.log(error);
     });
 });
+app.post("/submit", express.json(), async (req, res) => {
+  console.log(req.body);
+  try {
+    const data = req.body;
+    const filledIngredients = data.ingredients;
+    const ingredientList = [...new Set(filledIngredients)];
 
+    // Join the ingredients with commas
+    const formattedIngredients = ingredientList.join(", ");
+
+    // Create the new_prompt string
+    const newPrompt = `What can I make with ${formattedIngredients} ->`;
+
+    // Call the OpenAI API
+    // console.log(openai);
+    // const response = await openai.chat.completions.create({
+    //   model: fineTunedModel,
+    //   prompt: newPrompt,
+    //   max_tokens: 100,
+    //   temperature: 0,
+    // });
+    const completion = await openai.completions.create({
+      ///messages: [{ role: "user", content: newPrompt }],
+      model: fineTunedModel,
+      prompt: newPrompt,
+      max_tokens: 100,
+      temperature: 0,
+    });
+    console.log(completion.choices[0].text);
+    const answer = completion.choices[0].text;
+
+    res.status(200).json({ answer });
+  } catch (error) {
+    console.error("Error:", error.message);
+    res.status(500).json({ error: "An error occurred" });
+  }
+});
 const port = process.env.PORT || 7002;
 app.listen(port, () => {
   console.log(`Server running on port: ${port}`);
