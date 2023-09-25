@@ -2,8 +2,8 @@ class IntentInfo {
     constructor() {
         this.intent = "";
         this.context = "";
-        this.intentConfidence = "";
-        this.lastUserUtterance = "";W
+        this.intentConfidence = 100;
+        this.lastUserUtterance = "";
         this.slots = {};
     }
 }

@@ -12,8 +12,13 @@ echo.get("/", function (req, res) {
 
 echo.post("/echo-proxy", express.json(), function (req, res) {
 //     sd
-    //exchangeRequest=new ExchangeRequest
-    ExchangeRequest =req.body
-    manager(ExchangeRequest )
+
+    console.log("REQUEST", req.body)
+    let exchangeRequest=new ExchangeRequest
+    exchangeRequest =req.body
+    
+    let responseOfManager=manager(exchangeRequest )
+    console.log("RESPONSE",responseOfManager)
+    res.status(200).json(responseOfManager);
    });
 module.exports=echo;

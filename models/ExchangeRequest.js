@@ -8,7 +8,7 @@ class ExchangeRequest {
         this.botConfig = {};
         this.userInput = "";
         this.automatedIntent = "";
-        this.userInputType = new UserInputType;
+        this.userInputType = UserInputType.TEXT;
         this.executionInfo=new ActionExecutionInfo;
         this.systemTelemetryData=new SystemTelemetryData;
     }

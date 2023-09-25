@@ -2,7 +2,7 @@
 class AudioTranscriptionConfig {
     constructor() {
         this.transcriptionProfileId="";
-        hintPhrases=[]
+        this.hintPhrases=[]
     }
 }
 
