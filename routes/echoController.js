@@ -2,7 +2,7 @@ var express = require("express");
 var echo = express.Router();
 var cors = require("cors");
 const ExchangeRequest = require("../models/ExchangeRequest");
-const manager = require("../manager/EchoManager");
+const {echoManager} = require("../manager/EchoManager");
 
 echo.use(cors());
 echo.get("/", function (req, res) {
@@ -17,8 +17,8 @@ echo.post("/echo-proxy", express.json(), function (req, res) {
     let exchangeRequest=new ExchangeRequest
     exchangeRequest =req.body
     
-    let responseOfManager=manager(exchangeRequest )
-    console.log("RESPONSE",responseOfManager)
+    let responseOfManager=echoManager(exchangeRequest )
+    console.log("sjdgbajsdbkjadbkabdkjabdkjbkadsbkasdkajbs",responseOfManager.nextPromptSequence.prompts[0].base64EncodedG711ulawWithWavHeader)
     res.status(200).json(responseOfManager);
    });
 module.exports=echo;

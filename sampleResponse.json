@@ -1,0 +1,73 @@
+[
+    {
+        "responseId": "8dcaf29f-d3aa-4ecc-93c8-0bd92804a06e-646be87f",
+        "queryResult": {
+            "fulfillmentMessages": [
+                {
+                    "platform": "PLATFORM_UNSPECIFIED",
+                    "text": {
+                        "text": [
+                            "This is a test - from DialogFlow"
+                        ]
+                    },
+                    "message": "text"
+                },
+                {
+                    "platform": "PLATFORM_UNSPECIFIED",
+                    "text": {
+                        "text": [
+                            "What can i do for you"
+                        ]
+                    },
+                    "message": "text"
+                }
+            ],
+            "outputContexts": [],
+            "queryText": "test",
+            "speechRecognitionConfidence": 0,
+            "action": "",
+            "parameters": {
+                "fields": {}
+            },
+            "allRequiredParamsPresent": true,
+            "fulfillmentText": "This is a test - from DialogFlow",
+            "webhookSource": "",
+            "webhookPayload": null,
+            "intent": {
+                "inputContextNames": [],
+                "events": [],
+                "trainingPhrases": [],
+                "outputContexts": [],
+                "parameters": [],
+                "messages": [],
+                "defaultResponsePlatforms": [],
+                "followupIntentInfo": [],
+                "name": "projects/task1-icx-uvep/agent/intents/0c45f481-6b13-4d93-a9d8-8f78d47b6b4b",
+                "displayName": "This is a test",
+                "priority": 0,
+                "isFallback": false,
+                "webhookState": "WEBHOOK_STATE_UNSPECIFIED",
+                "action": "",
+                "resetContexts": false,
+                "rootFollowupIntentName": "",
+                "parentFollowupIntentName": "",
+                "mlDisabled": false,
+                "liveAgentHandoff": false,
+                "endInteraction": false
+            },
+            "intentDetectionConfidence": 0.6304061412811279,
+            "diagnosticInfo": null,
+            "languageCode": "en",
+            "sentimentAnalysisResult": null,
+            "cancelsSlotFilling": false
+        },
+        "webhookStatus": null,
+        "outputAudio": {
+            "type": "Buffer",
+            "data": []
+        },
+        "outputAudioConfig": null
+    },
+    null,
+    null
+]

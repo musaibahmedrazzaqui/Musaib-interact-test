@@ -1,0 +1,39 @@
+{
+virtualAgentId: 'echo-test',
+  botConfig: '{\n' +
+    '  "webhookUrl": "https://bdd7-119-155-48-137.ngrok.io/echo/echo-proxy",\n' +
+    '  "authorizationHeader": null,\n' +
+    '  "customHeaders": [],\n' +
+    '  "endpointParameters": [\n' +
+    '    {\n' +
+    '      "name": null,\n' +
+    '      "value": null\n' +
+    '    }\n' +
+    '  ],\n' +
+    '  "schemaVersion": "V1",\n' +
+    '  "timeout": 10000,\n' +
+    '  "webhookClientCertificates": []\n' +
+    '}',
+  userInput: 'do you jst repeat everything',
+  userInputType: 1,
+  executionInfo: {
+    contactId: 469416020342,
+    busNo: 4599319,
+    requestId: 6,
+    actionType: 'RESTPROXY',
+    actionId: 6,
+    scriptName: 'System\\Imposters\\RestProxy_Imposter'
+  },
+  systemTelemetryData: {
+    consumerProcessHost: 'DAL-B2COR01',
+    consumerProcessName: 'VCSvc',
+    consumerProcessVersion: '5.1.1.1',
+    inContactClusterAlias: null,
+    inContactScriptEngineHost: 'DAL-B2COR01',
+    consumerMetaData: null
+  },
+  base64wavFile: null,
+  botSessionState: { state: '469416020342_4599319' },
+  customPayload: null,
+  mediaType: 'Chat'
+}
