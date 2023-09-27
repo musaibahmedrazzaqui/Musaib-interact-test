@@ -18,7 +18,7 @@ echo.post("/echo-proxy", express.json(), function (req, res) {
     exchangeRequest =req.body
     
     let responseOfManager=echoManager(exchangeRequest )
-    console.log("sjdgbajsdbkjadbkabdkjabdkjbkadsbkasdkajbs",responseOfManager.nextPromptSequence.prompts[0].base64EncodedG711ulawWithWavHeader)
+    console.log("sjdgbajsdbkjadbkabdkjabdkjbkadsbkasdkajbs",responseOfManager)
     res.status(200).json(responseOfManager);
    });
 module.exports=echo;

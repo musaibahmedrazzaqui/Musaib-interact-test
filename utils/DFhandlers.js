@@ -15,11 +15,12 @@ const credentials={
 }
 
 const dialogflowClient = new dialogflow.SessionsClient({credentials});
-
+const intentsClient=new dialogflow.IntentsClient({credentials})
 const textQuery=async(userText,userId)=>{
     //let response=""
     //const sessionPath=dialogflowClient.sessionPath(projectId, userId)
-    console.log("debug 4")
+    //console.log("debug 4")
+    console.log("inside txtquerey")
     let sessionPath=dialogflowClient.projectAgentSessionPath(projectId,userId)
     const request={
         session:sessionPath,
@@ -33,6 +34,32 @@ const textQuery=async(userText,userId)=>{
 
     try{
         const response=await dialogflowClient.detectIntent(request)
+        console.log(response)
+        return response
+        //console.log("debug 5")
+        //eturn response
+    }catch(err){
+        console.log(err)
+        return err
+    }
+    //console.log("debug 7")
+    //return response
+}
+const eventQueryWelcome=async(userId,userInput)=>{
+    let sessionPath=dialogflowClient.projectAgentSessionPath(projectId,userId)
+    
+    const request={
+        session:sessionPath,
+        queryInput:{
+            event:{
+                name:userInput,
+                languageCode:config.languageCode
+            }
+        }
+    }
+
+    try{
+        const response= dialogflowClient.detectIntent(request)
         //console.log(response)
         return response
         //console.log("debug 5")
@@ -44,7 +71,6 @@ const textQuery=async(userText,userId)=>{
     //console.log("debug 7")
     //return response
 }
-
 module.exports={
-    textQuery
+    textQuery,eventQueryWelcome
 }

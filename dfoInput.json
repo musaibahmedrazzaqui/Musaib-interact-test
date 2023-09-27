@@ -1,0 +1,28 @@
+{
+    "fields": {
+      "mediaSpecificObject": {
+        "structValue": {
+          "fields": {
+            "dfomessage": {
+              "structValue": {
+                "fields": {
+                  "type": {
+                    "stringValue": "dfoMsgDebug",
+                    "kind": "stringValue"
+                  },
+                  "payload": {
+                    "structValue": {
+                      "fields": {}
+                    },
+                    "kind": "structValue"
+                  }
+                }
+              },
+              "kind": "structValue"
+            }
+          }
+        },
+        "kind": "structValue"
+      }
+    }
+  }

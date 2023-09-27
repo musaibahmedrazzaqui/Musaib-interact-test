@@ -9,7 +9,7 @@ class ExchangeResponse{
         this.nextPromptSequence=new PromptSequence
         this.intentInfo=new IntentInfo
         this.nextPromptBehaviors=new PromptBehaviors
-        this.customPayload={}
+       this.customPayload={}
         this.errorDetails=new BotErrorDetails
         this.botSessionState={}
     }
