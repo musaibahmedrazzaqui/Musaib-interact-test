@@ -15,13 +15,13 @@ const credentials={
 }
 
 const dialogflowClient = new dialogflow.SessionsClient({credentials});
-const intentsClient=new dialogflow.IntentsClient({credentials})
 const textQuery=async(userText,userId)=>{
     //let response=""
     //const sessionPath=dialogflowClient.sessionPath(projectId, userId)
     //console.log("debug 4")
-    console.log("inside txtquerey")
+    console.log("inside dfhandlers")
     let sessionPath=dialogflowClient.projectAgentSessionPath(projectId,userId)
+    //console.log("SESSION PATH",sessionPath)
     const request={
         session:sessionPath,
         queryInput:{

@@ -3,18 +3,28 @@ const ExchangeResponse = require("../models/ExchangeResponse")
 const PromptDefinition = require("../models/PromptDefinition")
 const UserInputType = require("../models/UserInputType")
 const DFhandlers =require("../utils/DFhandlers")
+const {struct} = require('pb-util');
 
 function handleBotState(executionInfo){
     let botState=executionInfo.contactId + "_" + executionInfo.busNo
     //console.log(botState)
     return botState
 }
-async function handleEndContact(userInput,exchangeResponse,dfres){
-    exchangeResponse.intentInfo.intent="End intent"
-    exchangeResponse.branchName=BotExchangeBranch.ReturnControlToScript
-    exchangeResponse.nextPromptSequence.prompts[0].transcript=dfres
-    //exchangeResponse.customPayload=null
-    exchangeResponse.botSessionState=null;
+function setValForDF(value){
+    return value
+}
+async function handleCustomPayload(exchangeRequest,exchangeResponse){
+    console.log("in custom payload")
+    //setDFWvalue(exchangeRequest.customPayload.customPayload.echoValue)
+    
+    const resultQuery= await DFhandlers.textQuery(exchangeRequest.userInput, exchangeResponse.botSessionState)
+    //console.log(resultQuery[0].queryResult.fulfillmentMessages[0])
+    if(resultQuery[0].queryResult.intent.displayName=="StandardBotExchangeCustomInput"){
+        exchangeResponse.nextPromptSequence.prompts[0].transcript=resultQuery[0].queryResult.fulfillmentMessages[0].text.text[0]
+        //exchangeResponse.nextPromptSequence.prompts[0].transcript=exchangeRequest.customPayload.customPayload.echoValue
+    }else{
+        exchangeResponse.nextPromptSequence.prompts[0].transcript="You are sending a custom payload! it is only accessible in standardbotexchangeinput behavior"
+    }
     //  exchangeResponse.nextPromptSequence.prompts[1].transcript="Should I echo anything back?"
     return exchangeResponse
 }
@@ -26,18 +36,20 @@ async function handleEndContact(userInput,exchangeResponse,dfres){
         console.log("in if",fulfillmentMessages)
         //console.log(typeof(text))
         console.log("PAYLOAD",fulfillmentMessages[0].payload)
-        exchangeResponse.nextPromptSequence.customPayload=fulfillmentMessages[0].payload.fields
+        exchangeResponse.customPayload=struct.decode(fulfillmentMessages[0].payload)
         
     }else{
-        console.log("in else",fulfillmentMessages)
-        let text=res[0].queryResult.fulfillmentMessages[0].text.text[0]
+        console.log("in else",fulfillmentMessages[0].text.text[0])
+        let text=fulfillmentMessages[0].text.text[0]
         exchangeResponse.nextPromptSequence.prompts[0].transcript=text
     }
     
     //console.log(typeof(text))
+    exchangeResponse.intentInfo.intent=res[0].queryResult.intent.displayName
+    
     exchangeResponse.branchName=BotExchangeBranch.PromptAndCollectNextResponse
     
-    exchangeResponse.intentInfo.intent=res[0].queryResult.intent.displayName
+    
     exchangeResponse.intentInfo.intentConfidence=res[0].queryResult.intentDetectionConfidence
     //exchangeResponse.customPayload=null
     return exchangeResponse
@@ -46,18 +58,36 @@ async function handleEndContact(userInput,exchangeResponse,dfres){
     //  exchangeResponse.nextPromptSequence.prompts[1].transcript="Should I echo anything back?"
     
 }
+
 async function handleText(userInput,exchangeResponse){
     
     try{
         const resultQuery= await DFhandlers.textQuery(userInput, exchangeResponse.botSessionState)
+        console.log(resultQuery[0])
         let fulfillmentMessages=resultQuery[0].queryResult.fulfillmentMessages
         const fulfillmentLength=resultQuery[0].queryResult.fulfillmentMessages.length
-        
+        console.log(fulfillmentMessages)
         
         if(fulfillmentMessages[0].text==undefined){
             //console.log(typeof(text))
-            console.log("PAYLOAD",fulfillmentMessages[0].payload)
-            exchangeResponse.nextPromptSequence.prompts[0].mediaSpecificObject=fulfillmentMessages[0].payload
+            console.log("PAYsdsdLOAD",fulfillmentMessages[0].payload)
+            if(resultQuery[0].queryResult.intent.displayName!=="StandardBotDfoMessage"){
+                exchangeResponse.customPayload=struct.decode(fulfillmentMessages[0].payload)
+                console.log(exchangeResponse.customPayload)
+                if(!exchangeResponse.customPayload.content){
+                    exchangeResponse.branchName=BotExchangeBranch.PromptAndCollectNextResponse
+                }
+                if(exchangeResponse.customPayload.content && exchangeResponse.customPayload.content.vahExchangeResultBranch){
+                    exchangeResponse.branchName=exchangeResponse.customPayload.content.vahExchangeResultBranch
+                }
+                 if(exchangeResponse.customPayload.content && exchangeResponse.customPayload.content.intent){
+                    exchangeResponse.intentInfo.intent=exchangeResponse.customPayload.content.intent
+                }
+            }else{
+                exchangeResponse.nextPromptSequence.prompts[0].mediaSpecificObject=struct.decode(fulfillmentMessages[0].payload)
+            
+            }
+            //exchangeResponse.customPayload=struct.decode(fulfillmentMessages[0].payload)
             
         }else{
             //console.log("HI")
@@ -72,10 +102,11 @@ async function handleText(userInput,exchangeResponse){
                 exchangeResponse.branchName=BotExchangeBranch.PromptAndCollectNextResponse
             }else{
                 exchangeResponse.branchName=BotExchangeBranch.ReturnControlToScript
+                exchangeResponse.botSessionState=null
             }
             
             exchangeResponse.nextPromptSequence.prompts[0].transcript=fulfillmentMessages[0].text.text[0]
-            if(resultQuery[0].queryResult.intent.displayName=="Default Fallback Intent"){
+            if(resultQuery[0].queryResult.intent.isFallback==true){
                
                 exchangeResponse.intentInfo.intent="UserInputNotUnderstood"
               
@@ -99,7 +130,7 @@ async function handleText(userInput,exchangeResponse){
 function handleDTMF(userInput,exchangeResponse){
     exchangeResponse.intentInfo.intent="DTMF intent"
     
-    exchangeResponse.nextPromptSequence.prompts[0].transcript=userInput
+    exchangeResponse.nextPromptSequence.prompts[0].transcript="You entered a DTMF"
     //exchangeResponse.customPayload=null
     return exchangeResponse
 }
@@ -121,10 +152,12 @@ function handleTimeout(userInput,exchangeResponse){
     return exchangeResponse
 }
 
+
 const customManager=async(exchangeRequest)=>{
     console.log("inside custom manager",exchangeRequest)
     let exchangeResponse=new ExchangeResponse;
     //console.log(exchangeRequest.userInput)
+    
     let executionInfo=exchangeRequest.executionInfo
     let userInputType=exchangeRequest.userInputType
     try{
@@ -150,7 +183,13 @@ const customManager=async(exchangeRequest)=>{
 
     else if(userInputType==UserInputType.TEXT){
         console.log("in text")
-        finalizedResponse=await handleText(exchangeRequest.userInput,exchangeResponse)
+        if(exchangeRequest.customPayload){
+            //console.log(exchangeRequest.customPayload)
+            finalizedResponse=await handleCustomPayload(exchangeRequest,exchangeResponse)
+        }else{
+            finalizedResponse=await handleText(exchangeRequest.userInput,exchangeResponse)
+        }
+        
         
         //console.log("FINALIZED",finalizedResponse.nextPromptSequence)
         
