@@ -25,27 +25,26 @@ app.use("/custom",Custom.custom)
 const port = process.env.PORT || 7002;
 
 app.post("/fulfilment", express.json(), function (req, res) {
-  console.log("INSIDE FULILMENT",req.body.queryResult.queryText);
+  let params=""
+  if(req.body.originalDetectIntentRequest.payload.customPayload){
+    params=req.body.originalDetectIntentRequest.payload.customPayload.echoValue
+  }else{
+    params="ARe you sure you sent a custom payload?"
+  }
+   
   //let orderId = req.body;
   let appData = {};
       
     
   let text=""
       //console.log(response.data.shipmentDate);
-      axios.get("http://localhost:7002/custom/get-value").then(response=>{
-        console.log(response.data)
-        if(response.data.customPayload){
-          text=response.data.customPayload.customPayload.echoValue
-        }else{
-          text="Payload not found"
-        }
         
         const fulfilmentMsg = {
           fulfillmentMessages: [
             {
               "text": {
                 "text": [
-                  text
+                  params
                 ]
               }
             }
@@ -54,10 +53,7 @@ app.post("/fulfilment", express.json(), function (req, res) {
         };
         //console.log(fulfilmentMsg)
         res.status(201).json(fulfilmentMsg);
-      }).catch(err=>{
-        console.log(err)
-        res.send(err)
-      })
+      
      
   
    
